@@ -1,0 +1,72 @@
+[
+    {
+        "name": "Laptop Pro",
+        "category": "Electronics",
+        "unitPrice": 1200.0,
+        "expirationDate": "2030-12-31",
+        "quantityInStock": 15
+    },
+    {
+        "name": "Smartphone X",
+        "category": "Electronics",
+        "unitPrice": 900.0,
+        "expirationDate": "2031-06-30",
+        "quantityInStock": 30
+    },
+    {
+        "name": "Bluetooth Headphones",
+        "category": "Electronics",
+        "unitPrice": 150.0,
+        "expirationDate": "2029-11-15",
+        "quantityInStock": 25
+    },
+    {
+        "name": "Organic Apples",
+        "category": "Food",
+        "unitPrice": 3.99,
+        "expirationDate": "2025-07-10",
+        "quantityInStock": 50
+    },
+    {
+        "name": "Whole Wheat Bread",
+        "category": "Food",
+        "unitPrice": 2.5,
+        "expirationDate": "2025-06-01",
+        "quantityInStock": 40
+    },
+    {
+        "name": "T-Shirt",
+        "category": "Clothing",
+        "unitPrice": 25.0,
+        "expirationDate": "2030-01-01",
+        "quantityInStock": 60
+    },
+    {
+        "name": "Jeans",
+        "category": "Clothing",
+        "unitPrice": 60.0,
+        "expirationDate": "2030-01-01",
+        "quantityInStock": 35
+    },
+    {
+        "name": "Sneakers",
+        "category": "Clothing",
+        "unitPrice": 80.0,
+        "expirationDate": "2030-01-01",
+        "quantityInStock": 20
+    },
+    {
+        "name": "Notebook",
+        "category": "Stationery",
+        "unitPrice": 5.5,
+        "expirationDate": "2029-09-01",
+        "quantityInStock": 80
+    },
+    {
+        "name": "Pen Pack",
+        "category": "Stationery",
+        "unitPrice": 3.0,
+        "expirationDate": "2029-09-01",
+        "quantityInStock": 100
+    }
+]
