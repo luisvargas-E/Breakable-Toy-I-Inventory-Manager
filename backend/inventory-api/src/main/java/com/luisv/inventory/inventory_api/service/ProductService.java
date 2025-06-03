@@ -1,6 +1,7 @@
 package com.luisv.inventory.inventory_api.service;
 
 import org.springframework.stereotype.Service;
+import com.luisv.inventory.inventory_api.exception.ProductNotFoundException;
 
 import com.luisv.inventory.inventory_api.model.Product;
 import com.luisv.inventory.inventory_api.repository.ProductRepository;
@@ -8,7 +9,6 @@ import com.luisv.inventory.inventory_api.repository.ProductRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,14 +40,16 @@ public class ProductService {
     }
 
     public Product markOutOfStock(Long id) {
-        Product product = repo.findById(id).orElseThrow();
+        Product product = repo.findById(id)
+        .orElseThrow(() -> new ProductNotFoundException(id));
         product.setQuantityInStock(0);
         product.setUpdatedAt(LocalDateTime.now());
         return repo.update(id, product);
     }
 
     public Product markInStock(Long id) {
-        Product product = repo.findById(id).orElseThrow();
+        Product product = repo.findById(id)
+        .orElseThrow(() -> new ProductNotFoundException(id));
         product.setQuantityInStock(10);
         product.setUpdatedAt(LocalDateTime.now());
         return repo.update(id, product);
@@ -144,17 +146,7 @@ public class ProductService {
             "totalValue", overallValue,
             "averagePrice", overallAverage
         ));
-        /*List<Product> inStock = all.stream().filter(p -> p.getQuantityInStock() > 0).toList();
-
-        double totalValue = inStock.stream().mapToDouble(p -> p.getQuantityInStock() * p.getUnitPrice()).sum();
-        double avgPrice = inStock.stream().mapToDouble(Product::getUnitPrice).average().orElse(0);
-        int totalQty = inStock.stream().mapToInt(Product::getQuantityInStock).sum();
-
-        Map<String, Object> metrics = new HashMap<>();
-        metrics.put("totalStock", totalQty);
-        metrics.put("totalValue", totalValue);
-        metrics.put("averagePrice", avgPrice);
-        return metrics;*/
+        
         return result;
     }
 }

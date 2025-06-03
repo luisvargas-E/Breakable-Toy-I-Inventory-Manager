@@ -9,7 +9,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { CreateProductForm  } from './CreateProductForm';
 import api from '../../api/axios';
-import type {Product } from "../components.types"
+import type {Product } from "../ProductTable/ProductTable.types";
 
 type Props = {
   isOpen: boolean;

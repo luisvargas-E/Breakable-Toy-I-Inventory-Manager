@@ -2,11 +2,10 @@ import { Button, ChakraProvider, Flex, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {  AddIcon } from '@chakra-ui/icons';
 
-import { SearchForm } from "./components/SearchForm";
-import CreateProduct from "./components/CreateProduct"  
-import  ProductTable  from "./components/ProductTable";
+import { SearchForm, CreateProduct, ProductTable } from "./components/index"
 import MetricsTable from "./components/MetricsTable.tsx/MetricsTable.component";
-import type { SearchFormData,  Product,  } from "./components/components.types";
+import type { SearchFormData } from "./components/SearchForm/SearchForm.types";
+import type { Product } from "./components/ProductTable/ProductTable.types";
 import api from "./api/axios";
 
 function App() {
@@ -46,7 +45,7 @@ useEffect(() => {
 //Refresh Metrics
   const [metricsRefresh, setMetricsRefresh] = useState(Date.now());
 
-  const triggerMetricsRefresh = () => {
+  const getMetricsRefresh = () => {
     setMetricsRefresh(Date.now());
   };
 //Recover date from  the Search Form
@@ -61,19 +60,19 @@ useEffect(() => {
     if (!categories.includes(newProduct.category)) {
       setCategories((prev) => [...prev, newProduct.category]);
     }
-    triggerMetricsRefresh();
+    getMetricsRefresh();
   };
   //Botones stock
   const handleUpdateProduct =(updatedProduct: Product) => {
     setProducts((prev) =>
     prev.map((p) => (p.id === updatedProduct.id ? updatedProduct :p))
   );
-  triggerMetricsRefresh();
+  getMetricsRefresh();
   };
 
   const handleDeleteProduct = (id: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
-    triggerMetricsRefresh();
+    getMetricsRefresh();
   };
 
   
@@ -88,7 +87,7 @@ useEffect(() => {
           </Button>
           <CreateProduct isOpen={isOpen} onClose={onClose} onAddProduct={handleAddProduct} categories={categories}/>
          </Flex>  
-         <Flex height="800" width="1500px" direction="column" m="10" p="6" borderWidth="1px" borderRadius="md"
+         <Flex minHeight="300px" width="1500px" direction="column" m="10" p="6" borderWidth="1px" borderRadius="md"
          >
           <ProductTable  
           filters={filters}
@@ -96,10 +95,11 @@ useEffect(() => {
           onUpdate={handleUpdateProduct}
           onDelete={handleDeleteProduct}
           setProducts={setProducts}
-          categories={categories}/>
+          categories={categories}
+          getMetricsRefresh={getMetricsRefresh}/>
           </Flex> 
       <Flex 
-        height="600" width="1500px" direction="column" m="10" p="6" borderWidth="1px" borderRadius="md"
+        minHeight="300px" width="1500px" direction="column" m="10" p="6" borderWidth="1px" borderRadius="md"
          >
           <MetricsTable refreshTrigger={metricsRefresh} />
           </Flex>      

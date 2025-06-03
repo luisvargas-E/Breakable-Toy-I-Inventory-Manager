@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import api from "../../api/axios";
 import type  { CreateProductFormData } from "../CreateProduct/CreateProductForm";
 import CreateProductForm from "../CreateProduct/CreateProductForm"
-import type { Product } from "../components.types";
+import type {Product } from "../ProductTable/ProductTable.types";
 
 type Props = {
   isOpen: boolean;
@@ -54,7 +54,9 @@ const EditProductModal = ({ isOpen, onClose, product, onUpdate, categories }: Pr
         category: data.category,
         quantityInStock: data.quantityInStock,
         unitPrice: data.unitPrice,
-        expirationDate: new Date(data.expirationDate).toISOString(),
+        expirationDate: data.expirationDate
+          ? new Date(data.expirationDate).toISOString()
+          : "",
       };
 
       const response = await api.put(`/products/${product.id}`, updatedProduct);

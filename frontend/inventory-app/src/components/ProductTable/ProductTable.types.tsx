@@ -1,14 +1,4 @@
-export type SearchFormData = {
-    name: string;
-    availability: string;
-    categories: string [];
-};
-
-export type SearchFormProps = {
-    onSearch: (data: SearchFormData) => void;
-    onOpenModal: () => void;
-    categories: string[];
-};
+import type { SearchFormData } from "../SearchForm/SearchForm.types";
 
 export type Product = {
   id: string;
@@ -31,9 +21,5 @@ export type ProductTableProps = Actions & {
   products: Product[];
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   categories: string[];
-};
-
-export type StockProps ={
-    product: Product;
-    onStatusChange: (updated: Product) => void;
+  getMetricsRefresh: () => void;
 };
