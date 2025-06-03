@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import { Controller  } from 'react-hook-form';
 import type {FieldErrors, UseFormRegister, Control} from 'react-hook-form';
-import CreatableSelect from 'react-select/creatable';
 
 export type CreateProductFormData = {
   name: string;

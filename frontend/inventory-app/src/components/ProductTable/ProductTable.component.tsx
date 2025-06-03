@@ -1,19 +1,17 @@
 import {
-  Table, Thead, Tbody, Tr, Th, Td, Checkbox, Button, Flex, Box,
-  textDecoration,
+  Table, Thead, Tbody, Tr, Th, Td, Button, Flex, Box,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpDownIcon } from "@chakra-ui/icons";
-//import api from "../../api/axios";
-import type { Product, SortKey, ProductTableProps, SearchFormData}  from "../components.types"
+import type { Product, SortKey, ProductTableProps}  from "../ProductTable/ProductTable.types";
 import  Actions  from "../Actions/Actions.components";
 import StockToggleButton from "../Items/StockButtom";
 
 
-const ProductTable = ({filters, products, setProducts, onUpdate, onDelete, categories}: ProductTableProps) => {
+const ProductTable = ({filters, products, setProducts, onUpdate, onDelete, categories, getMetricsRefresh}: ProductTableProps) => {
   //const [products, setProducts] = useState<Product[]>([]);
   const [filtered, setFiltered] = useState<Product[]>([]);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  //const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortAsc, setSortAsc] = useState(true);
@@ -62,11 +60,7 @@ const ProductTable = ({filters, products, setProducts, onUpdate, onDelete, categ
     }
   };
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
-  };
+  
  const getExpirationBg = (expirationDate?: string): string | undefined => {
   if (!expirationDate) return  undefined;
 
@@ -84,7 +78,7 @@ const ProductTable = ({filters, products, setProducts, onUpdate, onDelete, categ
  const getStockColor= (stock: number): string | undefined => {
   
   if(stock >= 5 && stock <= 10 ) return "orange.300";
-  if (stock >= 0 && stock < 5) return "red.700";
+  if (stock >= 0 && stock < 5) return "red.300";
   return undefined;
  };
 
@@ -122,12 +116,13 @@ const ProductTable = ({filters, products, setProducts, onUpdate, onDelete, categ
               <Td sx={getNameStyle(p.quantityInStock)}>{p.name}</Td>
               <Td>${p.unitPrice.toFixed(2)}</Td>
               <Td>{p.expirationDate?.split("T")[0]}</Td>
-              <Td color={getStockColor(p.quantityInStock)}>{p.quantityInStock}</Td>
+              <Td bg={getStockColor(p.quantityInStock)}>{p.quantityInStock}</Td>
               <Td>
                 <StockToggleButton product={p} onStatusChange={(updated) => {
                     setProducts((prev: Product[]) => 
                       prev.map((prod) => (prod.id === updated.id ? updated : prod))
                   );
+                  getMetricsRefresh();
                 }}
                 />
               </Td>

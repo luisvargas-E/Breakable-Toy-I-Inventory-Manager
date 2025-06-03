@@ -19,6 +19,7 @@ public class Product {
     private Integer quantityInStock;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean inStock;
 
     // Getters and Setters
 }

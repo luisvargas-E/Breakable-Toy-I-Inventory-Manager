@@ -10,7 +10,7 @@
         "name": "Smartphone X",
         "category": "Electronics",
         "unitPrice": 900.0,
-        "expirationDate": "2031-06-30",
+        "expirationDate": "",
         "quantityInStock": 30
     },
     {
@@ -38,14 +38,14 @@
         "name": "T-Shirt",
         "category": "Clothing",
         "unitPrice": 25.0,
-        "expirationDate": "2030-01-01",
+        "expirationDate": "2025-05-29",
         "quantityInStock": 60
     },
     {
         "name": "Jeans",
         "category": "Clothing",
         "unitPrice": 60.0,
-        "expirationDate": "2030-01-01",
+        "expirationDate": "2025-06-01",
         "quantityInStock": 35
     },
     {
@@ -59,7 +59,7 @@
         "name": "Notebook",
         "category": "Stationery",
         "unitPrice": 5.5,
-        "expirationDate": "2029-09-01",
+        "expirationDate": "2025-06-01",
         "quantityInStock": 80
     },
     {
@@ -68,5 +68,19 @@
         "unitPrice": 3.0,
         "expirationDate": "2029-09-01",
         "quantityInStock": 100
+    },
+    {
+        "name": "Office Chair",
+        "category": "Furniture",
+        "unitPrice": 200.0,
+        "expirationDate": "2025-06-04",
+        "quantityInStock": 10
+    },
+    {
+        "name": "Dining Table",
+        "category": "Furniture",
+        "unitPrice": 500.0,
+        "expirationDate": "2025-06-05",
+        "quantityInStock": 5
     }
 ]

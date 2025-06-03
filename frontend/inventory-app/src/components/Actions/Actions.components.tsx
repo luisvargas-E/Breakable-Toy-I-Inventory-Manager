@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, useToast } from "@chakra-ui/react";
 import EditProductModal from "../Actions/Actions.EditProduct.component";
 import ConfirmDeleteModal from "../Actions/Actions.ConfirmDelete";
-import type { Product } from "../components.types";
+import type {Product } from "../ProductTable/ProductTable.types";
 import api from "../../api/axios";
 
 type ActionsProps = {

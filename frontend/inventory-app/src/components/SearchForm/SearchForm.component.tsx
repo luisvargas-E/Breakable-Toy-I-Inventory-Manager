@@ -1,13 +1,8 @@
 import { 
   Flex, Input, Select, Button, FormControl, FormLabel, Stack, Checkbox, InputGroup, InputLeftElement} from "@chakra-ui/react";
-import { set, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { Search2Icon } from "@chakra-ui/icons";
-import type { SearchFormProps, SearchFormData } from "../components.types";
-import { useEffect, useState } from "react";
-import api from 'axios';
-
-//const categories = ['Books', 'Electronics', 'Clothing'];
-
+import type { SearchFormProps, SearchFormData } from "./SearchForm.types";
 
 export const SearchForm = ({ onSearch, categories }:SearchFormProps) => {
     const {
@@ -108,3 +103,4 @@ export const SearchForm = ({ onSearch, categories }:SearchFormProps) => {
           </form>
   );
 };
+export default SearchForm;
