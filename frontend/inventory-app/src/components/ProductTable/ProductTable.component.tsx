@@ -3,143 +3,162 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpDownIcon } from "@chakra-ui/icons";
-import type { Product, SortKey, ProductTableProps}  from "../ProductTable/ProductTable.types";
-import  Actions  from "../Actions/Actions.components";
+import type { Product, SortKey, ProductTableProps } from "../ProductTable/ProductTable.types";
+import Actions from "../Actions/Actions.components";
 import StockToggleButton from "../Items/StockButtom";
 
+const ProductTable = ({
+  filters,
+  products,
+  setProducts,
+  onUpdate,
+  onDelete,
+  categories,
+  getMetricsRefresh,
+}: ProductTableProps) => {
 
-const ProductTable = ({filters, products, setProducts, onUpdate, onDelete, categories, getMetricsRefresh}: ProductTableProps) => {
-  //const [products, setProducts] = useState<Product[]>([]);
-  const [filtered, setFiltered] = useState<Product[]>([]);
-  //const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("name");
-  const [sortAsc, setSortAsc] = useState(true);
-  const itemsPerPage = 10;
-  
+  const [isAscending, setIsAscending] = useState(true);
+  const ITEMS_PER_PAGE = 10;
 
+  // Filtrar productos según nombre, categoría y disponibilidad
   useEffect(() => {
-    const lower = filters.name.toLowerCase();
-    const filteredData = products.filter((p) => {
-      const matchName = p.name.toLowerCase().includes(lower);
-      const matchAvailability =
+    const filtered = products.filter((product) => {
+      const nameMatches = product.name.toLowerCase().includes(filters.name.toLowerCase());
+      const availabilityMatches =
         filters.availability === "in-stock"
-        ? p.quantityInStock > 0
-        : filters.availability === "out-of-stock"
-        ? p.quantityInStock === 0
-        : true;
-    const matchCategory =
-      filters.categories.length  === 0 || filters.categories.includes(p.category);
-    return matchName && matchAvailability && matchCategory;
+          ? product.quantityInStock > 0
+          : filters.availability === "out-of-stock"
+          ? product.quantityInStock === 0
+          : true;
+      const categoryMatches =
+        filters.categories.length === 0 || filters.categories.includes(product.category);
+
+      return nameMatches && availabilityMatches && categoryMatches;
     });
-    setFiltered(filteredData);
-    setPage(1);
+
+    setFilteredProducts(filtered);
+    setCurrentPage(1);
   }, [filters, products]);
 
-  const sorted = useMemo(() => {
-    return [...filtered].sort((a, b) => {
-      const valA = a[sortKey];
-      const valB = b[sortKey];
-      if (typeof valA === "number" && typeof valB === "number") {
-        return sortAsc ? valA - valB : valB - valA;
+  // Ordenar productos según la columna y dirección
+  const sortedProducts = useMemo(() => {
+    return [...filteredProducts].sort((a, b) => {
+      const valueA = a[sortKey];
+      const valueB = b[sortKey];
+
+      if (typeof valueA === "number" && typeof valueB === "number") {
+        return isAscending ? valueA - valueB : valueB - valueA;
       }
-      return sortAsc
-        ? String(valA).localeCompare(String(valB))
-        : String(valB).localeCompare(String(valA));
+      return isAscending
+        ? String(valueA).localeCompare(String(valueB))
+        : String(valueB).localeCompare(String(valueA));
     });
-  }, [filtered, sortKey, sortAsc]);
+  }, [filteredProducts, sortKey, isAscending]);
 
-  const paginated = sorted.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const paginatedProducts = sortedProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
 
-  const toggleSort = (key: SortKey) => {
-    if (sortKey === key) setSortAsc(!sortAsc);
+  const handleSortToggle = (key: SortKey) => {
+    if (sortKey === key) setIsAscending(!isAscending);
     else {
       setSortKey(key);
-      setSortAsc(true);
+      setIsAscending(true);
     }
   };
 
-  
- const getExpirationBg = (expirationDate?: string): string | undefined => {
-  if (!expirationDate) return  undefined;
+  // Colores de fondo según días para expiración
+  const getExpirationColor = (expirationDate?: string) => {
+    if (!expirationDate) return undefined;
 
-  const today= new Date();
-  const exp = new Date(expirationDate);
-  const diffDays = Math.ceil((exp.getTime()  - today.getTime()) / (1000 * 60 * 60 * 24));
+    const today = new Date();
+    const expiration = new Date(expirationDate);
+    const daysDiff = Math.ceil((expiration.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diffDays < 7) return "red.100";
-  if (diffDays < 14) return "yellow.100";
-  if (diffDays >= 14) return "green.100";
+    if (daysDiff < 7) return "red.100";
+    if (daysDiff < 14) return "yellow.100";
+    return "green.100";
+  };
 
-  return undefined;
- };
+  // Colores de stock
+  const getStockColor = (quantity: number) => {
+    if (quantity >= 5 && quantity <= 10) return "orange.300";
+    if (quantity >= 0 && quantity < 5) return "red.300";
+    return undefined;
+  };
 
- const getStockColor= (stock: number): string | undefined => {
-  
-  if(stock >= 5 && stock <= 10 ) return "orange.300";
-  if (stock >= 0 && stock < 5) return "red.300";
-  return undefined;
- };
+  // Estilo para nombres fuera de stock
+  const getNameStyle = (quantity: number) =>
+    quantity === 0 ? { textDecoration: "line-through" } : {};
 
- const getNameStyle = (stock: number) =>
-    stock === 0 ? { textDecoration: "line-through" } : {};
   return (
     <Box p={4}>
-      <Table variant= "simple">
+      <Table variant="simple">
         <Thead>
           <Tr>
-            
-            <Th cursor="pointer" onClick={() => toggleSort("category")}>
+            <Th cursor="pointer" onClick={() => handleSortToggle("category")}>
               Category <ArrowUpDownIcon />
             </Th>
-            <Th cursor="pointer" onClick={() => toggleSort("name")}>
+            <Th cursor="pointer" onClick={() => handleSortToggle("name")}>
               Name <ArrowUpDownIcon />
             </Th>
-            <Th cursor="pointer" onClick={() => toggleSort("unitPrice")}>
+            <Th cursor="pointer" onClick={() => handleSortToggle("unitPrice")}>
               Price <ArrowUpDownIcon />
             </Th>
-            <Th cursor="pointer" onClick={() => toggleSort("expirationDate")}>
+            <Th cursor="pointer" onClick={() => handleSortToggle("expirationDate")}>
               Expiration Date <ArrowUpDownIcon />
             </Th>
-            <Th cursor="pointer" onClick={() => toggleSort("quantityInStock")}>Stock
-              <ArrowUpDownIcon />
+            <Th cursor="pointer" onClick={() => handleSortToggle("quantityInStock")}>
+              Stock <ArrowUpDownIcon />
             </Th>
             <Th>Stock Toggle</Th>
             <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {paginated.map((p) => (
-            <Tr key={p.id} bg={getExpirationBg(p.expirationDate)}>
-              <Td>{p.category}</Td>
-              <Td sx={getNameStyle(p.quantityInStock)}>{p.name}</Td>
-              <Td>${p.unitPrice.toFixed(2)}</Td>
-              <Td>{p.expirationDate?.split("T")[0]}</Td>
-              <Td bg={getStockColor(p.quantityInStock)}>{p.quantityInStock}</Td>
+          {paginatedProducts.map((product) => (
+            <Tr key={product.id} bg={getExpirationColor(product.expirationDate)}>
+              <Td>{product.category}</Td>
+              <Td sx={getNameStyle(product.quantityInStock)}>{product.name}</Td>
+              <Td>${product.unitPrice.toFixed(2)}</Td>
+              <Td>{product.expirationDate?.split("T")[0]}</Td>
+              <Td bg={getStockColor(product.quantityInStock)}>{product.quantityInStock}</Td>
               <Td>
-                <StockToggleButton product={p} onStatusChange={(updated) => {
-                    setProducts((prev: Product[]) => 
-                      prev.map((prod) => (prod.id === updated.id ? updated : prod))
-                  );
-                  getMetricsRefresh();
-                }}
+                <StockToggleButton
+                  product={product}
+                  onStatusChange={(updated) => {
+                    setProducts((prev) =>
+                      prev.map((p) => (p.id === updated.id ? updated : p))
+                    );
+                    getMetricsRefresh();
+                  }}
                 />
               </Td>
               <Td>
-                <Actions product={p}  onUpdate={onUpdate} onDelete={onDelete} categories={categories}/>
+                <Actions
+                  product={product}
+                  onUpdate={onUpdate}
+                  onDelete={onDelete}
+                  categories={categories}
+                />
               </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
+
       <Flex mt={4} justify="center" gap={2}>
         {Array.from({ length: totalPages }, (_, i) => (
           <Button
             key={i}
             size="sm"
-            onClick={() => setPage(i + 1)}
-            variant={page === i + 1 ? "solid" : "outline"}
+            onClick={() => setCurrentPage(i + 1)}
+            variant={currentPage === i + 1 ? "solid" : "outline"}
           >
             {i + 1}
           </Button>
