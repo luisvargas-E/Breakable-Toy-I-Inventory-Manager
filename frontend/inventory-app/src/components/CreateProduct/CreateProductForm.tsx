@@ -6,10 +6,10 @@ import {
   Stack,
   ModalBody,
   ModalFooter,
-  Text
+  Text,
 } from '@chakra-ui/react';
-import { Controller  } from 'react-hook-form';
-import type {FieldErrors, UseFormRegister, Control} from 'react-hook-form';
+import { Controller } from 'react-hook-form';
+import type { FieldErrors, UseFormRegister, Control } from 'react-hook-form';
 
 export type CreateProductFormData = {
   name: string;
@@ -36,63 +36,100 @@ export const CreateProductForm = ({
   control,
   categories,
 }: Props) => {
+
+  const renderCategoryInput = () => (
+    <FormControl isInvalid={!!errors.category}>
+      <FormLabel>Category</FormLabel>
+      <Input
+        placeholder="Type or Select Category"
+        list="category-options"
+        {...register('category', { required: 'Category is required' })}
+      />
+      <datalist id="category-options">
+        {categories.map((category) => (
+          <option key={category} value={category} />
+        ))}
+      </datalist>
+      {errors.category && (
+        <Text color="red.500">{errors.category.message}</Text>
+      )}
+    </FormControl>
+  );
+
   return (
     <>
       <ModalBody>
         <Stack spacing={4}>
-          <FormControl>
+          {/* Product Name */}
+          <FormControl isInvalid={!!errors.name}>
             <FormLabel>Name</FormLabel>
-            <Input {...register('name', { required: true, maxLength: 120 })} />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Category</FormLabel>
-            <input
-              placeholder='Type or Select Category'
-              list='category-options'
-              {...register("category", { required: true })}
+            <Input
+              {...register('name', {
+                required: 'Name is required',
+                maxLength: { value: 120, message: 'Max 120 characters' },
+              })}
             />
-            <datalist id="category-options">
-              {Array.isArray(categories) &&categories.map((cat) => (
-                <option key={cat} value={cat} />
-              ))}
-            </datalist>
-            {errors.category && <Text color="red.500">Category is required</Text>}
- 
+            {errors.name && <Text color="red.500">{errors.name.message}</Text>}
           </FormControl>
 
-          <FormControl>
+          {/* Category */}
+          {renderCategoryInput()}
+
+          {/* Quantity in Stock */}
+          <FormControl isInvalid={!!errors.quantityInStock}>
             <FormLabel>Stock</FormLabel>
-            <Input type="number" {...register('quantityInStock', { required: true , min:0, valueAsNumber: true,})} />
+            <Input
+              type="number"
+              min={0}
+              {...register('quantityInStock', {
+                required: 'Stock is required',
+                valueAsNumber: true,
+                min: { value: 0, message: 'Stock cannot be negative' },
+              })}
+            />
+            {errors.quantityInStock && (
+              <Text color="red.500">{errors.quantityInStock.message}</Text>
+            )}
           </FormControl>
 
-          <FormControl>
+          {/* Unit Price */}
+          <FormControl isInvalid={!!errors.unitPrice}>
             <FormLabel>Unit Price</FormLabel>
-            <Input type="number" step="0.01" {...register('unitPrice', { required: true })} />
+            <Input
+              type="number"
+              step="0.01"
+              {...register('unitPrice', { required: 'Unit Price is required' })}
+            />
+            {errors.unitPrice && (
+              <Text color="red.500">{errors.unitPrice.message}</Text>
+            )}
           </FormControl>
 
+          {/* Expiration Date (Optional) */}
           <FormControl>
             <FormLabel>Expiration Date (Optional)</FormLabel>
-           <Controller
+            <Controller
               name="expirationDate"
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <input
+                <Input
                   type="date"
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                  />
+                  {...field}
+                />
               )}
             />
-
-          
           </FormControl>
         </Stack>
       </ModalBody>
 
       <ModalFooter>
-        <Button type="submit" colorScheme="green" mr={3} isLoading={isSubmitting}>
+        <Button
+          type="submit"
+          colorScheme="green"
+          mr={3}
+          isLoading={isSubmitting}
+        >
           Save
         </Button>
         <Button onClick={onCancel}>Cancel</Button>

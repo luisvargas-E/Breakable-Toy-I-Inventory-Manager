@@ -1,6 +1,6 @@
 import { Button, useToast} from "@chakra-ui/react";
 import api from "../../api/axios";
-import type { Product} from "../components.types";
+import type { Product} from "../ProductTable/ProductTable.types";
 
 export type StockProps ={
     product: Product;
